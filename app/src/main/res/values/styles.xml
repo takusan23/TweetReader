@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#0288d1</item>
+        <item name="colorPrimaryDark">#005b9f</item>
+        <item name="colorAccent">#5eb8ff</item>
+        <item name="android:forceDarkAllowed">true</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <!-- 半透明背景設定 https://akira-watson.com/android/theme-translucent.html  -->
+    <drawable name="transparameter">#7f000000</drawable>
+    <style name="TransparamentTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/transparameter</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+
+</resources>

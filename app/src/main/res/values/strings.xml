@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">TweetReader</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="login">Login</string>
+    <string name="sort">Sort</string>
+    <string name="twitter_login">Login to Twitter</string>
+    <string name="open_twitter_login">Open Twitter authentication screen</string>
+    <string name="login_number">Enter the number</string>
+    <string name="network_error">Connect to the network.</string>
+    <string name="error">Error</string>
+    <string name="add_account">Add Account</string>
+    <string name="username">\@UserName</string>
+    <string name="add">add</string>
+    <string name="account_found">Account Found</string>
+    <string name="loading">Loading</string>
+    <string name="all_tweet">All Tweet</string>
+    <string name="Media">Media</string>
+    <string name="account_not_found">Account not found.</string>
+    <string name="add_account_ok">Account added.</string>
+    <string name="login_success">Login succeeded.</string>
+    <string name="license">License</string>
+    <string name="account_list">Account list</string>
+    <string name="delete">Delete</string>
+    <string name="delete_message">Do you want to delete it?</string>
+    <string name="delete_ok">It has been deleted.</string>
+    <string name="source_code">SourceCode</string>
+    <string name="my_consumer_use">Use yout own consumer key (for advanced users)</string>
+    <string name="lunch_app">Open with Twitter App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save_image_message">The image has been saved.</string>
+    <string name="save_image">Save Image</string>
+    <string name="image_download_message">Do you want to save the image?</string>
+    <string name="video_download_complete">The video has been saved.</string>
+    <string name="download_progress">Downloading</string>
+    <string name="connection">Connection</string>
+    <string name="saving">Saving</string>
+    <string name="open">Open</string>
+    <string name="share_add_account">Add account</string>
+</resources>
