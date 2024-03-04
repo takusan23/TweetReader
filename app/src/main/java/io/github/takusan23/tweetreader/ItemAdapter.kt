@@ -7,11 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import com.google.android.material.snackbar.Snackbar
 import com.woxthebox.draglistview.DragItemAdapter
-import java.util.ArrayList
 
 internal class ItemAdapter(
     list: ArrayList<Pair<Long, String>>,

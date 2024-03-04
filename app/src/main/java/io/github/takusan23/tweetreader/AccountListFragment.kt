@@ -10,8 +10,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.woxthebox.draglistview.DragListView
-import kotlinx.android.synthetic.main.account_list_fragment.*
-import java.util.ArrayList
+import io.github.takusan23.tweetreader.databinding.AccountListFragmentBinding
 
 class AccountListFragment : Fragment() {
 
@@ -21,12 +20,16 @@ class AccountListFragment : Fragment() {
     private var nameStringArrayList: ArrayList<String>? = null
     private var dragListView: DragListView? = null
 
+    private var _binding: AccountListFragmentBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.account_list_fragment, container, false)
+        _binding = AccountListFragmentBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +47,11 @@ class AccountListFragment : Fragment() {
         //ListViewドラッグとか
         setDragListView()
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -64,11 +72,11 @@ class AccountListFragment : Fragment() {
             testArrayList.add(Pair(i.toLong(), cursor.getString(1)))
             cursor.moveToNext()
         }
-        drag_listview.setLayoutManager(LinearLayoutManager(context))
+        binding.dragListview.setLayoutManager(LinearLayoutManager(context))
         val listAdapter =
             ItemAdapter(testArrayList, R.layout.drag_list_item, R.id.image, false, activity!!)
-        drag_listview.setAdapter(listAdapter, true)
-        drag_listview.setCanDragHorizontally(false)
+        binding.dragListview.setAdapter(listAdapter, true)
+        binding.dragListview.setCanDragHorizontally(false)
         cursor.close()
     }
 
@@ -76,7 +84,7 @@ class AccountListFragment : Fragment() {
      * DragListViewとか
      */
     private fun setDragListView() {
-        drag_listview.setDragListListener(object : DragListView.DragListListener {
+        binding.dragListview.setDragListListener(object : DragListView.DragListListener {
             override fun onItemDragStarted(position: Int) {
                 //Toast.makeText(getContext(), "Start - position: " + position, Toast.LENGTH_SHORT).show();
             }

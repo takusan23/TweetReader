@@ -47,4 +47,7 @@
     <string name="saving">保存中</string>
     <string name="open">開く</string>
     <string name="share_add_account">アカウント追加</string>
+    <string name="shutdown_dialog_title">サービスが終了しました</string>
+    <string name="shutdown_dialog_message">Twitter API を利用するための API キーが利用できなくなったため、サービスを終了しました。\nご利用ありがとうございました。\n（初回リリース 2019年7月4日）</string>
+    <string name="shutdown_dialog_close">閉じる</string>
 </resources>

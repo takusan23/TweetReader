@@ -1,27 +1,15 @@
 package io.github.takusan23.tweetreader
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
-import androidx.appcompat.app.AppCompatActivity
-import java.io.File
-import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import java.net.HttpURLConnection.HTTP_OK
-import java.io.BufferedInputStream
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
-import androidx.core.content.ContextCompat.startActivity
-
 
 class MediaSave {
 
@@ -42,7 +30,7 @@ class MediaSave {
     fun savePhoto(activity: AppCompatActivity, uri: Uri, bitmap: Bitmap) {
         try {
             //保存する
-            val outputStream = activity.contentResolver.openOutputStream(uri)
+            val outputStream = activity.contentResolver.openOutputStream(uri)!!
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         } catch (e: Exception) {
             e.printStackTrace()

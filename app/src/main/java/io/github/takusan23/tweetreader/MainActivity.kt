@@ -5,32 +5,20 @@ import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.transition.Explode
-import android.transition.Slide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
+import android.view.Menu
 import android.view.MenuItem
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
+import android.view.Window
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.view.View
-import android.view.Window
-import androidx.preference.PreferenceManager
-import twitter4j.auth.AccessToken
-import twitter4j.TwitterFactory
-import twitter4j.Twitter
-import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-import twitter4j.TwitterException
-import twitter4j.ResponseList
-
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.preference.PreferenceManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
+import io.github.takusan23.tweetreader.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,14 +26,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var helper: AccountsSQLiteHelper
     lateinit var db: SQLiteDatabase
 
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
-        setContentView(R.layout.activity_main)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        // このアプリは終了しました
+        // Twitter API が利用できなくなったためです
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.shutdown_dialog_title)
+            .setMessage(R.string.shutdown_dialog_message)
+            .setPositiveButton(R.string.shutdown_dialog_close) { _, _ -> }
+            .show()
 
         //データベース用意
         helper = AccountsSQLiteHelper(this)
@@ -55,11 +55,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         pref_setting = PreferenceManager.getDefaultSharedPreferences(this)
 
-        if (pref_setting.getString("token", null) == null) {
-            //ログウイン画面に飛ばす
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
+        // もうログインできない
+        /*
+                if (pref_setting.getString("token", null) == null) {
+                    //ログウイン画面に飛ばす
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
+        */
 
         //アカウント追加の共有を受けとる
         val intentAction = intent.action
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         //追加ボタン
-        fab.setOnClickListener { view ->
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             val addAccountBottomFragment = AddAccountBottomFragment()
             addAccountBottomFragment.show(supportFragmentManager, "add_account")
         }
@@ -127,16 +130,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.menu_setting -> {
 
             }
+
             R.id.menu_login -> {
                 //ログイン画面を開く
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
             }
+
             R.id.menu_license -> {
                 //ライセンス画面
                 val intent = Intent(this, LicenseActivity::class.java)
                 startActivity(intent)
             }
+
             R.id.menu_sourcecode -> {
                 //ChromeCustomTab起動
                 val url = "https://github.com/takusan23/TweetReader"
@@ -145,6 +151,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(this@MainActivity, Uri.parse(url))
             }
+
             R.id.lunch_app -> {
                 //Twitterアプリで開く
                 val fragment = supportFragmentManager.findFragmentById(R.id.activity_fragment)
@@ -203,13 +210,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             null,
             null
         )
-        nav_view.menu.clear()
-        nav_view.inflateMenu(R.menu.activity_main_drawer)
+        binding.navView.menu.clear()
+        binding.navView.inflateMenu(R.menu.activity_main_drawer)
         cursor.moveToFirst()
         for (i in 0 until cursor.count) {
             val user_id = cursor.getString(0)
             val name = cursor.getString(1)
-            nav_view.menu.add(name).setIcon(R.drawable.ic_account_circle_black_24dp)
+            binding.navView.menu.add(name).setIcon(R.drawable.ic_account_circle_black_24dp)
                 .setOnMenuItemClickListener {
                     val bundle = Bundle()
                     bundle.putString("id", user_id)

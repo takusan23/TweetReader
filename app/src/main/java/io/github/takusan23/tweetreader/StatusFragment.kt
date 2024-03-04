@@ -3,18 +3,26 @@ package io.github.takusan23.tweetreader
 import android.content.SharedPreferences
 import android.os.AsyncTask
 import android.os.Bundle
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import twitter4j.auth.AccessToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.status_fragment.*
-import twitter4j.*
+import io.github.takusan23.tweetreader.databinding.StatusFragmentBinding
+import twitter4j.Paging
+import twitter4j.Status
+import twitter4j.TwitterException
+import twitter4j.TwitterFactory
+import twitter4j.User
+import twitter4j.auth.AccessToken
 import kotlin.concurrent.thread
 
 
@@ -29,18 +37,23 @@ class StatusFragment : Fragment() {
 
     //追加読み込み制御用
     var isMoreLoading = false
+
     //最後のID
     var lastId = 0L
 
     //ゆーざー
     lateinit var user: User
 
+    private var _binding: StatusFragmentBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.status_fragment, container, false)
+        _binding = StatusFragmentBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,12 +67,12 @@ class StatusFragment : Fragment() {
 
 
         //ここから下三行必須
-        recycler_view.setHasFixedSize(true)
+        binding.recyclerView.setHasFixedSize(true)
         val mLayoutManager = LinearLayoutManager(context)
-        recycler_view.setLayoutManager(mLayoutManager)
+        binding.recyclerView.setLayoutManager(mLayoutManager)
         statusRecyclerViewAdapter = StatusRecyclerViewAdapter(status_list)
-        recycler_view.setAdapter(statusRecyclerViewAdapter)
-        recyclerViewLayoutManager = recycler_view.getLayoutManager()!!
+        binding.recyclerView.setAdapter(statusRecyclerViewAdapter)
+        recyclerViewLayoutManager = binding.recyclerView.getLayoutManager()!!
         //ステータス取得
         getUserStatus(isMediaOnly, null)
 
@@ -67,11 +80,11 @@ class StatusFragment : Fragment() {
         addNavigationOpen()
 
         //スワイプでリロード
-        swipe_refresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             getUserStatus(isMediaOnly, null)
         }
 
-        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {
             }
 
@@ -85,6 +98,7 @@ class StatusFragment : Fragment() {
                         isMediaOnly = false
                         getUserStatus(isMediaOnly, null)
                     }
+
                     getString(R.string.Media) -> {
                         isMediaOnly = true
                         getUserStatus(isMediaOnly, null)
@@ -97,7 +111,7 @@ class StatusFragment : Fragment() {
         getUser()
 
         //追加読み込み
-        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisibleItem =
@@ -115,6 +129,11 @@ class StatusFragment : Fragment() {
             }
         })
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun getUser() {
@@ -177,7 +196,7 @@ class StatusFragment : Fragment() {
 
         //くるくる
         if (context != null) {
-            snackbarProgress.showSnackbarProgress(context!!, recycler_view)
+            snackbarProgress.showSnackbarProgress(context!!, binding.recyclerView)
         }
 
         if (maxId == null) {
@@ -259,7 +278,7 @@ class StatusFragment : Fragment() {
                     super.onPostExecute(result)
                     //UIスレッド
                     statusRecyclerViewAdapter.notifyDataSetChanged()
-                    swipe_refresh?.isRefreshing = false
+                    binding.swipeRefresh?.isRefreshing = false
                     snackbarProgress.dissmiss()
                     isMoreLoading = false
                 }
@@ -277,12 +296,13 @@ class StatusFragment : Fragment() {
         val end = floatArrayOf(0f)
         val y_start = floatArrayOf(0f)
         val y_end = floatArrayOf(0f)
-        recycler_view?.setOnTouchListener { v, event ->
+        binding.recyclerView?.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     start[0] = event.x
                     y_start[0] = event.y
                 }
+
                 MotionEvent.ACTION_UP -> {
                     end[0] = event.x
                     y_end[0] = event.y

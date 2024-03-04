@@ -1,24 +1,21 @@
 package io.github.takusan23.tweetreader
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.AsyncTask
-import android.view.View
-import twitter4j.TwitterException
-import androidx.browser.customtabs.CustomTabsIntent
-import kotlinx.android.synthetic.main.activity_login.*
-import twitter4j.Twitter
-import twitter4j.TwitterFactory
-import twitter4j.conf.ConfigurationBuilder
-import twitter4j.auth.RequestToken
-import android.widget.Toast
-import android.content.ClipData
 import android.content.Intent
-import android.preference.PreferenceManager
+import android.net.Uri
+import android.os.AsyncTask
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import io.github.takusan23.tweetreader.databinding.ActivityLoginBinding
+import twitter4j.Twitter
+import twitter4j.TwitterException
+import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
-import java.util.prefs.Preferences
+import twitter4j.auth.RequestToken
+import twitter4j.conf.ConfigurationBuilder
 
 class LoginActivity : AppCompatActivity() {
 
@@ -28,22 +25,26 @@ class LoginActivity : AppCompatActivity() {
     lateinit var twitter: Twitter
     lateinit var request_token: RequestToken
 
+    private var _binding: ActivityLoginBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        _binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //コンシューマーキー（別ファイルにあります。バージョン管理システムから外せるように）
         consumerKey = getString(R.string.consumer_key)
         consumerSecret = getString(R.string.consumer_secret)
 
         //自分のコンシューマーキーを利用する設定有効時
-        my_consumer_key.setOnFocusChangeListener { view, b ->
-            if (b){
+        binding.myConsumerKey.setOnFocusChangeListener { view, b ->
+            if (b) {
                 //有効
-                consumer_key_layout.visibility = View.VISIBLE
-            }else{
+                binding.consumerKeyLayout.visibility = View.VISIBLE
+            } else {
                 //無効
-                consumer_key_layout.visibility = View.INVISIBLE
+                binding.consumerKeyLayout.visibility = View.INVISIBLE
             }
         }
 
@@ -55,11 +56,11 @@ class LoginActivity : AppCompatActivity() {
 
     /*ログイン画面*/
     private fun getLoginScreen() {
-        lunch_twitter_button.setOnClickListener {
+        binding.lunchTwitterButton.setOnClickListener {
             //自分のコンシューマーキーを利用する設定有効時
-            if (my_consumer_key.isChecked){
-                consumerKey = consumer_key_textinput.text.toString()
-                consumerSecret = consumer_secret_textinput.text.toString()
+            if (binding.myConsumerKey.isChecked) {
+                consumerKey = binding.consumerKeyTextinput.text.toString()
+                consumerSecret = binding.consumerSecretTextinput.text.toString()
             }
             val cb = ConfigurationBuilder()
             cb.setDebugEnabled(true)
@@ -93,13 +94,13 @@ class LoginActivity : AppCompatActivity() {
 
     /*アクセストークン取得*/
     private fun getAccessToken() {
-        login_button.setOnClickListener(View.OnClickListener {
+        binding.loginButton.setOnClickListener(View.OnClickListener {
             object : AsyncTask<Void, Void, Void>() {
                 @SuppressLint("WrongThread")
                 override fun doInBackground(vararg aVoid: Void): Void? {
                     var accessToken: AccessToken? = null
                     try {
-                        val pin = login_number_textinput.getText().toString()
+                        val pin = binding.loginNumberTextinput.getText().toString()
                         if (pin.length > 0) {
                             accessToken = twitter.getOAuthAccessToken(pin)
                         } else {
@@ -128,7 +129,11 @@ class LoginActivity : AppCompatActivity() {
                 override fun onPostExecute(result: Void?) {
                     super.onPostExecute(result)
                     //画面を戻す
-                    Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        getString(R.string.login_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                 }

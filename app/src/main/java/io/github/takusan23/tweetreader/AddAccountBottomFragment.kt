@@ -1,19 +1,16 @@
 package io.github.takusan23.tweetreader
 
 import android.content.ContentValues
-import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.add_account_bottom_fragment.*
+import io.github.takusan23.tweetreader.databinding.AddAccountBottomFragmentBinding
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
@@ -23,8 +20,16 @@ class AddAccountBottomFragment : BottomSheetDialogFragment() {
     lateinit var helper: AccountsSQLiteHelper
     lateinit var db: SQLiteDatabase
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.add_account_bottom_fragment, container, false)
+    private var _binding: AddAccountBottomFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = AddAccountBottomFragmentBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,12 +40,17 @@ class AddAccountBottomFragment : BottomSheetDialogFragment() {
         db = helper.writableDatabase
         db.disableWriteAheadLogging()
 
-        account_id_string_textinputedittext.setText(arguments?.getString("id"))
+        binding.accountIdStringTextinputedittext.setText(arguments?.getString("id"))
 
         //追加ボタン
-        add_account_button.setOnClickListener {
+        binding.addAccountButton.setOnClickListener {
             getAccountID()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun getAccountID() {
@@ -62,12 +72,12 @@ class AddAccountBottomFragment : BottomSheetDialogFragment() {
             tw.oAuthAccessToken = at
 
             //InoutLayoutの中身取得
-            val id_string = account_id_string_textinputedittext.text.toString()
+            val id_string = binding.accountIdStringTextinputedittext.text.toString()
 
             //非同期処理
             object : AsyncTask<Void, Void, Void>() {
                 override fun doInBackground(vararg p0: Void?): Void? {
-                    try{
+                    try {
                         val user = tw.showUser(id_string)
                         //アカウントがあるかチェック
                         if (user.screenName != null) {
@@ -78,20 +88,29 @@ class AddAccountBottomFragment : BottomSheetDialogFragment() {
                             contentValues.put("setting", "") //将来使うかも
                             db.insert("account_db", null, contentValues)
                             //閉じる
-                            add_account_button.post {
+                            binding.addAccountButton.post {
                                 dismiss()
-                                Toast.makeText(context, getString(R.string.add_account_ok), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    getString(R.string.add_account_ok),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 //ドロワー再読込
                                 (activity as MainActivity).setAccountList()
                             }
                         } else {
-                            add_account_button.post {
-                                Toast.makeText(context, getString(R.string.account_not_found), Toast.LENGTH_SHORT).show()
+                            binding.addAccountButton.post {
+                                Toast.makeText(
+                                    context,
+                                    getString(R.string.account_not_found),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
-                    }catch (e: TwitterException){
-                        add_account_button.post {
-                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    } catch (e: TwitterException) {
+                        binding.addAccountButton.post {
+                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                     return null

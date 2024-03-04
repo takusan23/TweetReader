@@ -1,27 +1,15 @@
 package io.github.takusan23.tweetreader
 
-
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
-import androidx.fragment.app.Fragment
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_image_view.*
-import kotlinx.android.synthetic.main.fragment_image_view.*
+import io.github.takusan23.tweetreader.databinding.FragmentImageViewBinding
 import kotlin.concurrent.thread
 
 /**
@@ -31,12 +19,16 @@ class ImageViewFragment : Fragment() {
 
     val mediaSave: MediaSave = MediaSave()
 
+    private var _binding: FragmentImageViewBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_image_view, container, false)
+        _binding = FragmentImageViewBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,20 +36,25 @@ class ImageViewFragment : Fragment() {
 
         val url = arguments?.getString("link")
 
-        Glide.with(imageview_fragment_imageview)
+        Glide.with(binding.imageviewFragmentImageview)
             .load(url)
-            .into(imageview_fragment_imageview)
+            .into(binding.imageviewFragmentImageview)
 
         //保存ボタン
-        (activity as ImageViewActivity).imageview_activity_save_button.setOnClickListener {
+        (activity as ImageViewActivity).binding.imageviewActivitySaveButton.setOnClickListener {
             //画像保存
             savePhoto()
         }
 
-        (activity as ImageViewActivity).imageview_activity_open_browser.setOnClickListener {
+        (activity as ImageViewActivity).binding.imageviewActivityOpenBrowser.setOnClickListener {
             lunchBrowser(url)
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 
@@ -66,7 +63,7 @@ class ImageViewFragment : Fragment() {
         thread {
             val url = arguments?.getString("link")
             (activity as ImageViewActivity).saveBitmap =
-                Glide.with(imageview_fragment_imageview)
+                Glide.with(binding.imageviewFragmentImageview)
                     .asBitmap()
                     .load(url)
                     .submit()

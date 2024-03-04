@@ -13,9 +13,9 @@ class SnackbarProgress() {
     lateinit var snackbar: Snackbar
     fun showSnackbarProgress(context: Context, view: View) {
         snackbar = Snackbar.make(view, context.getString(R.string.loading), Snackbar.LENGTH_INDEFINITE)
-        val snackBer_viewGrop = snackbar.getView().findViewById<TextView>(R.id.snackbar_text).getParent() as ViewGroup
+        val snackBer_viewGrop = snackbar.getView().findViewById<TextView>(com.google.android.material.R.id.snackbar_text).getParent() as ViewGroup
         //SnackBerを複数行対応させる
-        val snackBer_textView = snackBer_viewGrop.findViewById(R.id.snackbar_text) as TextView
+        val snackBer_textView = snackBer_viewGrop.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
         snackBer_textView.maxLines = 2
         //複数行対応させたおかげでずれたので修正
         val progressBar = ProgressBar(context)

@@ -1,14 +1,18 @@
 package io.github.takusan23.tweetreader
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_license.*
+import androidx.appcompat.app.AppCompatActivity
+import io.github.takusan23.tweetreader.databinding.ActivityLicenseBinding
 
 class LicenseActivity : AppCompatActivity() {
 
+    private var _binding: ActivityLicenseBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_license)
+        _binding = ActivityLicenseBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         title = getString(R.string.license)
 
@@ -82,7 +86,7 @@ class LicenseActivity : AppCompatActivity() {
                 "See the License for the specific language governing permissions and\n" +
                 "limitations under the License."
 
-        license_textview.text =
+        binding.licenseTextview.text =
             "bumptech/glide \n${glide}\n---------------\nTwitter4J \n${twitter4j}\n---------------\nwoxblom/DragListView \n${dragListview}\n---------------\nchrisbanes/PhotoView \n${photoview}"
 
     }

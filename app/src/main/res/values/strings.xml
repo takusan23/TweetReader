@@ -50,4 +50,7 @@
     <string name="saving">Saving</string>
     <string name="open">Open</string>
     <string name="share_add_account">Add account</string>
+    <string name="shutdown_dialog_title">Service has ended</string>
+    <string name="shutdown_dialog_message">The service has been terminated because the API key for using the Twitter API is no longer available.\nThank you for using our service.\n( First release date: 2019/07/04)</string>
+    <string name="shutdown_dialog_close">close</string>
 </resources>

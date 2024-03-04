@@ -1,55 +1,52 @@
 package io.github.takusan23.tweetreader
 
-import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.widget.MediaController
-import android.widget.Toast
-import androidx.core.net.toUri
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_image_view.*
-import kotlinx.android.synthetic.main.activity_video_view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.net.Uri
-
+import androidx.core.net.toUri
+import io.github.takusan23.tweetreader.databinding.ActivityVideoViewBinding
 
 class VideoViewActivity : AppCompatActivity() {
 
     val mediaSave = MediaSave()
     var videoLink = ""
 
+    private var _binding: ActivityVideoViewBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video_view)
+
+        _binding = ActivityVideoViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar?.hide()
 
         //Uri
         videoLink = intent.getStringExtra("url") ?: ""
         // videoLink = "https://developer.android.com/images/home/android-p-clear-bg-with-shadow.png?hl=JA"
-        videoview_activity_videoview.setVideoURI(videoLink.toUri())
-        videoview_activity_videoview.setMediaController(MediaController(this))
+        binding.videoviewActivityVideoview.setVideoURI(videoLink.toUri())
+        binding.videoviewActivityVideoview.setMediaController(MediaController(this))
         //再生可能になったら再生
-        videoview_activity_videoview.setOnPreparedListener {
-            videoview_activity_videoview.start()
+        binding.videoviewActivityVideoview.setOnPreparedListener {
+            binding.videoviewActivityVideoview.start()
         }
 
         val statusText = intent.getStringExtra("status") ?: "test"
 
         //保存機能？
-        videoview_activity_save_button.setOnClickListener {
+        binding.videoviewActivitySaveButton.setOnClickListener {
             mediaSave.createFile(this, "$statusText.mp4")
         }
         //閉じるボタン
-        videoview_activity_close_button.setOnClickListener {
+        binding.videoviewActivityCloseButton.setOnClickListener {
             finish()
         }
         //ブラウザで開くボタン
-        videoview_activity_open_browser.setOnClickListener {
+        binding.videoviewActivityOpenBrowser.setOnClickListener {
             lunchBrowser(videoLink)
         }
 
@@ -57,7 +54,7 @@ class VideoViewActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             if (requestCode == MediaSave.requestCode) {
                 val uri = data?.data
                 if (uri != null) {
